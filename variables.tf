@@ -4,16 +4,6 @@ variable "enabled" {
   description = "Variable indicating whether deployment is enabled"
 }
 
-variable "cluster_identity_oidc_issuer" {
-  type        = string
-  description = "The OIDC Identity issuer for the cluster"
-}
-
-variable "cluster_identity_oidc_issuer_arn" {
-  type        = string
-  description = "The OIDC Identity issuer ARN for the cluster that can be used to associate IAM roles with a service account"
-}
-
 # ================ common variables (required) ================
 
 variable "helm_chart_name" {
