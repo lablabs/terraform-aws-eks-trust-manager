@@ -109,7 +109,7 @@ variable "irsa_additional_policies" {
 
 variable "irsa_role_name_prefix" {
   type        = string
-  default     = "<$addon-name>-irsa"
+  default     = "cert-manager-trust-irsa"
   description = "The IRSA role name prefix for vector"
 }
 
