@@ -8,19 +8,19 @@ variable "enabled" {
 
 variable "helm_chart_name" {
   type        = string
-  default     = "cert-manager-trust"
+  default     = "trust-manager"
   description = "Helm chart name to be installed"
 }
 
 variable "helm_chart_version" {
   type        = string
-  default     = "0.2.0"
+  default     = "0.5.0"
   description = "Version of the Helm chart"
 }
 
 variable "helm_release_name" {
   type        = string
-  default     = "cert-manager-trust"
+  default     = "trust-manager"
   description = "Helm release name"
 }
 
@@ -39,19 +39,19 @@ variable "helm_create_namespace" {
 variable "namespace" {
   type        = string
   default     = "kube-system"
-  description = "The K8s namespace in which the cert-manager-trust service account has been created"
+  description = "The K8s namespace in which the trust-manager service account has been created"
 }
 
 variable "settings" {
   type        = map(any)
   default     = {}
-  description = "Additional helm sets which will be passed to the Helm chart values, see https://artifacthub.io/packages/helm/cert-manager/cert-manager-trust"
+  description = "Additional helm sets which will be passed to the Helm chart values, see https://artifacthub.io/packages/helm/cert-manager/trust-manager"
 }
 
 variable "values" {
   type        = string
   default     = ""
-  description = "Additional yaml encoded values which will be passed to the Helm chart, see https://artifacthub.io/packages/helm/cert-manager/cert-manager-trust"
+  description = "Additional yaml encoded values which will be passed to the Helm chart, see https://artifacthub.io/packages/helm/cert-manager/trust-manager"
 }
 
 # ================ argo variables (required) ================
@@ -74,6 +74,18 @@ variable "argo_helm_enabled" {
   description = "If set to true, the ArgoCD Application manifest will be deployed using Kubernetes provider as a Helm release. Otherwise it'll be deployed as a Kubernetes manifest. See Readme for more info"
 }
 
+variable "argo_helm_wait_timeout" {
+  type        = string
+  default     = "10m"
+  description = "Timeout for ArgoCD Application Helm release wait job"
+}
+
+variable "argo_helm_wait_backoff_limit" {
+  type        = number
+  default     = 6
+  description = "Backoff limit for ArgoCD Application Helm release wait job"
+}
+
 variable "argo_destination_server" {
   type        = string
   default     = "https://kubernetes.default.svc"
@@ -87,6 +99,10 @@ variable "argo_project" {
 }
 
 variable "argo_info" {
+  type = list(object({
+    name  = string
+    value = string
+  }))
   default = [{
     "name"  = "terraform"
     "value" = "true"
@@ -95,11 +111,13 @@ variable "argo_info" {
 }
 
 variable "argo_sync_policy" {
+  type        = any
   description = "ArgoCD syncPolicy manifest parameter"
   default     = {}
 }
 
 variable "argo_metadata" {
+  type = any
   default = {
     "finalizers" : [
       "resources-finalizer.argocd.argoproj.io"
@@ -109,11 +127,13 @@ variable "argo_metadata" {
 }
 
 variable "argo_apiversion" {
+  type        = string
   default     = "argoproj.io/v1alpha1"
   description = "ArgoCD Appliction apiVersion"
 }
 
 variable "argo_spec" {
+  type        = any
   default     = {}
   description = "ArgoCD Application spec configuration. Override or create additional spec parameters"
 }
@@ -128,11 +148,12 @@ variable "argo_helm_values" {
 
 variable "argo_kubernetes_manifest_computed_fields" {
   type        = list(string)
-  default     = ["metadata.labels", "metadata.annotations"]
+  default     = ["metadata.labels", "metadata.annotations", "metadata.finalizers"]
   description = "List of paths of fields to be handled as \"computed\". The user-configured value for the field will be overridden by any different value returned by the API after apply."
 }
 
 variable "argo_kubernetes_manifest_field_manager_name" {
+  type        = string
   default     = "Terraform"
   description = "The name of the field manager to use when applying the kubernetes manifest resource. Defaults to Terraform"
 }
