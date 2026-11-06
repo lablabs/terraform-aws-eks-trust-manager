@@ -11,7 +11,7 @@ locals {
     name      = "trust-manager"
     namespace = "kube-system"
 
-    helm_chart_version = "0.16.0"
+    helm_chart_version = "0.25.0" # 0.25.0
     helm_repo_url      = "https://charts.jetstack.io"
   }
 
